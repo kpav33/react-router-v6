@@ -2,6 +2,7 @@ import React from "react";
 import { useOutletContext } from "react-router-dom";
 
 export default function HostVanInfo() {
+  // Get the currentVan value from the Outlet context defined in HostVanDetail component
   const { currentVan } = useOutletContext();
 
   return (

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function HostVans() {
-  const [vans, setVans] = React.useState([]);
+  const [vans, setVans] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetch("/api/host/vans")
       .then((res) => res.json())
       .then((data) => setVans(data.vans));

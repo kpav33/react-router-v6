@@ -16,6 +16,7 @@ export default function Header() {
       <nav>
         <NavLink
           to="/host"
+          // NavLink component has the isActive property that you can use to change nav link styling of the currently active routes
           style={({ isActive }) => (isActive ? activeStyles : null)}
         >
           Host

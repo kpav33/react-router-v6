@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link, NavLink, Outlet } from "react-router-dom";
 
 export default function HostVanDetail() {
   const { id } = useParams();
-  const [currentVan, setCurrentVan] = React.useState(null);
+  const [currentVan, setCurrentVan] = useState(null);
 
   const activeStyles = {
     fontWeight: "bold",
@@ -11,7 +11,7 @@ export default function HostVanDetail() {
     color: "#161616",
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetch(`/api/host/vans/${id}`)
       .then((res) => res.json())
       .then((data) => setCurrentVan(data.vans));
@@ -22,6 +22,7 @@ export default function HostVanDetail() {
   }
   return (
     <section>
+      {/* Relative path, go back to previous "folder" (one route back) */}
       <Link to=".." relative="path" className="back-button">
         &larr; <span>Back to all vans</span>
       </Link>
@@ -59,6 +60,7 @@ export default function HostVanDetail() {
             Photos
           </NavLink>
         </nav>
+        {/* To pass data from the parent route to children route, use Outlets context prop. This way Outlet works as a Context provider. Whatever value is passed to the context prop will be recievable in other child route component, by using useOutletContext hook .*/}
         <Outlet context={{ currentVan }} />
       </div>
     </section>
