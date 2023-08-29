@@ -7,18 +7,29 @@ export default function Vans() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [vans, setVans] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Query parameters represent a change in the UI (sorting, filtering, pagination) => You might want to use React state for such actions, but there is an issues, because the state gets reinitialized to initial value on page reload
   // They can be used as a single source of truth for certain application state => Ask yourself should a user be able to revisit or share this page just like it is? If yes, then you might consider raising that state up to the URL in a query parameter
   // Query parameters represent key/value pairs in the URL => /vans?type=rugged&filterBy=price
   const typeFilter = searchParams.get("type");
 
+  // Calling the data with proper loading screens and by using the getVans function, which has error handling built in
+  // Only added here as an example, other places where we use fetch could be refactored like this as well
   useEffect(() => {
     async function loadVans() {
       setLoading(true);
-      const data = await getVans();
-      setVans(data);
-      setLoading(false);
+      // Try block assumes the "happy path" route => When everything goes ok and as expected, and catch block is used for the "sad path" => When something goes wrong
+      try {
+        const data = await getVans();
+        setVans(data);
+      } catch (err) {
+        // console.log(err);
+        setError(err);
+      } finally {
+        // Finally block runs in both cases after either the try or catch block is executed
+        setLoading(false);
+      }
     }
 
     loadVans();
@@ -33,6 +44,8 @@ export default function Vans() {
     <div key={van.id} className="van-tile">
       {/* Van detail page uses the /vans/:id path and in this case the van.id variable will be accessible to us on the van detail page from the useParams hook */}
       {/* <Link to={`/vans/${van.id}`}> */}
+      {/* You can pass state to the Link so that this values will be available on the page that it is linking to */}
+      {/* You can pass any value as Link state in this case we are passing the values of the searchParams and of the active typeFilter */}
       <Link
         to={van.id}
         state={{
@@ -69,6 +82,10 @@ export default function Vans() {
 
   if (loading) {
     return <h1>Loading...</h1>;
+  }
+
+  if (error) {
+    return <h1>There was an error: {error.message}</h1>;
   }
 
   return (

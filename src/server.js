@@ -1,4 +1,4 @@
-import { createServer, Model } from "miragejs";
+import { createServer, Model, Response } from "miragejs";
 
 createServer({
   models: {
@@ -77,8 +77,11 @@ createServer({
   routes() {
     this.namespace = "api";
     this.logging = false;
+    // Added to test out the loading screen
+    // this.timing = 2000;
 
     this.get("/vans", (schema, request) => {
+      // return new Response(400, {}, { error: "Error fetching data" });
       return schema.vans.all();
     });
 

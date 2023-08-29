@@ -53,6 +53,7 @@ function App() {
               <Route path="photos" element={<HostVanPhotos />} />
             </Route>
           </Route>
+          {/* Catch all route that will show on all routes that don't have a specific path defined, to display a customized not found page */}
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
