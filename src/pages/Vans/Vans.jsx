@@ -3,10 +3,14 @@ import { Link, useSearchParams } from "react-router-dom";
 import { getVans } from "../../api";
 
 export default function Vans() {
+  // The useSearchParams hook is used to read and modify the query string in the URL for the current location. Like React's own useState hook, useSearchParams returns an array of two values: the current location's search params and a function that may be used to update them.
   const [searchParams, setSearchParams] = useSearchParams();
   const [vans, setVans] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Query parameters represent a change in the UI (sorting, filtering, pagination) => You might want to use React state for such actions, but there is an issues, because the state gets reinitialized to initial value on page reload
+  // They can be used as a single source of truth for certain application state => Ask yourself should a user be able to revisit or share this page just like it is? If yes, then you might consider raising that state up to the URL in a query parameter
+  // Query parameters represent key/value pairs in the URL => /vans?type=rugged&filterBy=price
   const typeFilter = searchParams.get("type");
 
   useEffect(() => {
@@ -20,11 +24,12 @@ export default function Vans() {
     loadVans();
   }, []);
 
+  // Filter the vans we want to display by using the type value from the search params
   const displayedVans = typeFilter
     ? vans.filter((van) => van.type === typeFilter)
     : vans;
 
-  const vanElements = vans.map((van) => (
+  const vanElements = displayedVans.map((van) => (
     <div key={van.id} className="van-tile">
       {/* Van detail page uses the /vans/:id path and in this case the van.id variable will be accessible to us on the van detail page from the useParams hook */}
       {/* <Link to={`/vans/${van.id}`}> */}
@@ -49,10 +54,13 @@ export default function Vans() {
   ));
 
   function handleFilterChange(key, value) {
+    // Pass values to the search params
     setSearchParams((prevParams) => {
       if (value === null) {
+        // Clear the search params value
         prevParams.delete(key);
       } else {
+        // Set the search params value
         prevParams.set(key, value);
       }
       return prevParams;
