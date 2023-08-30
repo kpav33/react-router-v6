@@ -146,6 +146,10 @@ const router = createBrowserRouter(
           element={<Dashboard />}
           // Check if user is authenticated before loading data
           // loader={dashboardLoader}
+          // loader={async () => {
+          //   const ok = await requireAuth();
+          //   console.log("OK ", ok);
+          // }}
           loader={async () => await requireAuth()}
         />
         <Route
