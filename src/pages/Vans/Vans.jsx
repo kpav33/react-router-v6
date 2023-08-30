@@ -8,16 +8,21 @@ import {
 } from "react-router-dom";
 import { getVans } from "../../api";
 
+// Create a loader
 export function loader() {
-  return defer({ vans: getVans() });
+  // return defer({ vans: getVans() });
+  return getVans();
 }
 
 export default function Vans() {
   // The useSearchParams hook is used to read and modify the query string in the URL for the current location. Like React's own useState hook, useSearchParams returns an array of two values: the current location's search params and a function that may be used to update them.
   const [searchParams, setSearchParams] = useSearchParams();
-  const [vans, setVans] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [vans, setVans] = useState([]);
+  // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  // Get data with useLoaderData hook
+  const vans = useLoaderData();
+  // console.log(vans);
 
   // Query parameters represent a change in the UI (sorting, filtering, pagination) => You might want to use React state for such actions, but there is an issues, because the state gets reinitialized to initial value on page reload
   // They can be used as a single source of truth for certain application state => Ask yourself should a user be able to revisit or share this page just like it is? If yes, then you might consider raising that state up to the URL in a query parameter
@@ -26,24 +31,27 @@ export default function Vans() {
 
   // Calling the data with proper loading screens and by using the getVans function, which has error handling built in
   // Only added here as an example, other places where we use fetch could be refactored like this as well
-  useEffect(() => {
-    async function loadVans() {
-      setLoading(true);
-      // Try block assumes the "happy path" route => When everything goes ok and as expected, and catch block is used for the "sad path" => When something goes wrong
-      try {
-        const data = await getVans();
-        setVans(data);
-      } catch (err) {
-        // console.log(err);
-        setError(err);
-      } finally {
-        // Finally block runs in both cases after either the try or catch block is executed
-        setLoading(false);
-      }
-    }
+  // With useEffect we are only loading the data after we have loaded the page (mounted the component), we need a lot of extra stuff (data state, loading state, error state...) we can simplify this by using loaders that react router provides for us
+  // Loaders make a small delay so that the data gets loaded before the new component is mounted (while we are still on the previous component), so when the desired component is mounted data is already prepared for use
+  // Replaced with useLoaderData hook
+  // useEffect(() => {
+  //   async function loadVans() {
+  //     setLoading(true);
+  //     // Try block assumes the "happy path" route => When everything goes ok and as expected, and catch block is used for the "sad path" => When something goes wrong
+  //     try {
+  //       const data = await getVans();
+  //       setVans(data);
+  //     } catch (err) {
+  //       // console.log(err);
+  //       setError(err);
+  //     } finally {
+  //       // Finally block runs in both cases after either the try or catch block is executed
+  //       setLoading(false);
+  //     }
+  //   }
 
-    loadVans();
-  }, []);
+  //   loadVans();
+  // }, []);
 
   // Filter the vans we want to display by using the type value from the search params
   const displayedVans = typeFilter
@@ -90,9 +98,9 @@ export default function Vans() {
     });
   }
 
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
+  // if (loading) {
+  //   return <h1>Loading...</h1>;
+  // }
 
   if (error) {
     return <h1>There was an error: {error.message}</h1>;
