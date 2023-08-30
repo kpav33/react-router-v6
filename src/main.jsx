@@ -30,6 +30,7 @@ import Layout from "./components/Layout";
 import HostLayout from "./components/HostLayout";
 import Login from "./pages/Login";
 import Error from "./components/Error";
+import AuthRequired from "./components/AuthRequired";
 
 // import Home from "./pages/Home";
 // import About from "./pages/About";
@@ -136,52 +137,83 @@ const router = createBrowserRouter(
         // loader={vanDetailLoader}
       />
 
+      {/* Write comment about protected routes in loaders here */}
       <Route path="host" element={<HostLayout />}>
         <Route
           index
           element={<Dashboard />}
           // loader={dashboardLoader}
+          loader={async () => {
+            return null;
+          }}
         />
         <Route
           path="income"
           element={<Income />}
           // loader={async ({ request }) => await requireAuth(request)}
+          loader={async () => {
+            return null;
+          }}
         />
         <Route
           path="reviews"
           element={<Reviews />}
           // loader={async ({ request }) => await requireAuth(request)}
+          loader={async () => {
+            return null;
+          }}
         />
         <Route
           path="vans"
           element={<HostVans />}
           errorElement={<Error />}
           // loader={hostVansLoader}
+          loader={async () => {
+            return null;
+          }}
         />
         <Route
           path="vans/:id"
           element={<HostVanDetail />}
           errorElement={<Error />}
           // loader={hostVanDetailLoader}
+          loader={async () => {
+            return null;
+          }}
         >
           <Route
             index
             element={<HostVanInfo />}
             // loader={async ({ request }) => await requireAuth(request)}
+            loader={async () => {
+              return null;
+            }}
           />
           <Route
             path="pricing"
             element={<HostVanPricing />}
             // loader={async ({ request }) => await requireAuth(request)}
+            loader={async () => {
+              return null;
+            }}
           />
           <Route
             path="photos"
             element={<HostVanPhotos />}
             // loader={async ({ request }) => await requireAuth(request)}
+            loader={async () => {
+              return null;
+            }}
           />
         </Route>
       </Route>
       <Route path="*" element={<NotFound />} />
+      {/* Purpose of protected routes is to stop data fetching of sensitive information, only logged-in users should be able to access their data */}
+      {/* Protected routes are implemented by preventin renders, so that if user isn't logged in, components don't get rendered and user is redirected to the login page, since data fetching takes place inside of the relevant components, if components don't render the fetching never happens */}
+      {/* Old way to implement protected routes, if you are not using any loaders and the new react router Data router api */}
+      {/* <Route element={<AuthRequired />}>
+        <Route path="protected" element={<h1>Super secret info here</h1>} />
+      </Route> */}
     </Route>
   )
 );
