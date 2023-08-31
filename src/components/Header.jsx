@@ -9,6 +9,7 @@ export default function Header() {
     color: "#161616",
   };
 
+  // Only added for simplicity sake to be able to quicky clear out local storage loggedin value
   function fakeLogOut() {
     localStorage.removeItem("loggedin");
   }
