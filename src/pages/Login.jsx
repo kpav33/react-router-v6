@@ -18,15 +18,21 @@ export async function action({ request }) {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
-  const data = await loginUser({ email, password });
-  // Used for fake auth...
-  localStorage.setItem("loggedin", true);
 
-  // Same as in utils file, just using return redirect() should work, but becuase of issues with Mirage JS it has to be done in such a hacky way
-  const response = redirect("/host");
-  response.body = true; // It's silly, but it works
-  throw response;
-  // return redirect("/host");
+  try {
+    const data = await loginUser({ email, password });
+    // Used for fake auth...
+    localStorage.setItem("loggedin", true);
+
+    // Same as in utils file, just using return redirect() should work, but becuase of issues with Mirage JS it has to be done in such a hacky way
+    const response = redirect("/host");
+    response.body = true; // It's silly, but it works
+    // Can't throw here, have to use return, because actions must return something
+    return response;
+    // return redirect("/host");
+  } catch (err) {
+    return err.message;
+  }
 
   // const formData = await request.formData();
   // const email = formData.get("email");
@@ -46,7 +52,8 @@ export async function action({ request }) {
 export default function Login() {
   const errorMessage = useActionData();
   const message = useLoaderData();
-  // Used to programatically navigate to different routes
+  // This hook tells you everything you need to know about a page navigation to build pending navigation indicators and optimistic UI on data mutations
+  // With it we can check what is the current state of the form, whether its idle or submitting
   const navigation = useNavigation();
 
   // Replaced by using react router actions
