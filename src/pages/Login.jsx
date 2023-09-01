@@ -18,6 +18,9 @@ export async function action({ request }) {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
+  // Get the path to redirect to from the search params
+  const pathname =
+    new URL(request.url).searchParams.get("redirectTo") || "/host";
 
   try {
     const data = await loginUser({ email, password });
@@ -25,7 +28,9 @@ export async function action({ request }) {
     localStorage.setItem("loggedin", true);
 
     // Same as in utils file, just using return redirect() should work, but becuase of issues with Mirage JS it has to be done in such a hacky way
-    const response = redirect("/host");
+    // const response = redirect("/host");
+    // Don't hardcode the redirect value, redirect the user to a page that they were trying to access, before being sent to the log in page
+    const response = redirect(pathname);
     response.body = true; // It's silly, but it works
     // Can't throw here, have to use return, because actions must return something
     return response;

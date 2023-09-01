@@ -10,8 +10,8 @@ import { getVans } from "../../api";
 
 // Create a loader
 export function loader() {
-  // return defer({ vans: getVans() });
-  return getVans();
+  // return getVans();
+  return defer({ vans: getVans() });
 }
 
 export default function Vans() {
@@ -21,8 +21,8 @@ export default function Vans() {
   // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   // Get data with useLoaderData hook
-  const vans = useLoaderData();
-  // console.log(vans);
+  // const vans = useLoaderData();
+  const dataPromise = useLoaderData();
 
   // Query parameters represent a change in the UI (sorting, filtering, pagination) => You might want to use React state for such actions, but there is an issues, because the state gets reinitialized to initial value on page reload
   // They can be used as a single source of truth for certain application state => Ask yourself should a user be able to revisit or share this page just like it is? If yes, then you might consider raising that state up to the URL in a query parameter
@@ -53,36 +53,39 @@ export default function Vans() {
   //   loadVans();
   // }, []);
 
+  // This code was commented out, because we used the Await component from react router dom and then added this code within that component (you can see that belo)
+  // This is done so that we can add some sort of loading indicator to improve the User experience while the user is waiting for the data to load
+  // When using loaders sometimes it can take about a second after a user click on the nav link to the desired page to actually load the page, so to show to the user that their page is loading so that they have some sort of feedback, we use the Await component which allows to show some sort of loading message to the user
   // Filter the vans we want to display by using the type value from the search params
-  const displayedVans = typeFilter
-    ? vans.filter((van) => van.type === typeFilter)
-    : vans;
+  // const displayedVans = typeFilter
+  //   ? vans.filter((van) => van.type === typeFilter)
+  //   : vans;
 
-  const vanElements = displayedVans.map((van) => (
-    <div key={van.id} className="van-tile">
-      {/* Van detail page uses the /vans/:id path and in this case the van.id variable will be accessible to us on the van detail page from the useParams hook */}
-      {/* <Link to={`/vans/${van.id}`}> */}
-      {/* You can pass state to the Link so that this values will be available on the page that it is linking to */}
-      {/* You can pass any value as Link state in this case we are passing the values of the searchParams and of the active typeFilter */}
-      <Link
-        to={van.id}
-        state={{
-          search: `?${searchParams.toString()}`,
-          type: typeFilter,
-        }}
-      >
-        <img src={van.imageUrl} />
-        <div className="van-info">
-          <h3>{van.name}</h3>
-          <p>
-            ${van.price}
-            <span>/day</span>
-          </p>
-        </div>
-        <i className={`van-type ${van.type} selected`}>{van.type}</i>
-      </Link>
-    </div>
-  ));
+  // const vanElements = displayedVans.map((van) => (
+  //   <div key={van.id} className="van-tile">
+  //     {/* Van detail page uses the /vans/:id path and in this case the van.id variable will be accessible to us on the van detail page from the useParams hook */}
+  //     {/* <Link to={`/vans/${van.id}`}> */}
+  //     {/* You can pass state to the Link so that this values will be available on the page that it is linking to */}
+  //     {/* You can pass any value as Link state in this case we are passing the values of the searchParams and of the active typeFilter */}
+  //     <Link
+  //       to={van.id}
+  //       state={{
+  //         search: `?${searchParams.toString()}`,
+  //         type: typeFilter,
+  //       }}
+  //     >
+  //       <img src={van.imageUrl} />
+  //       <div className="van-info">
+  //         <h3>{van.name}</h3>
+  //         <p>
+  //           ${van.price}
+  //           <span>/day</span>
+  //         </p>
+  //       </div>
+  //       <i className={`van-type ${van.type} selected`}>{van.type}</i>
+  //     </Link>
+  //   </div>
+  // ));
 
   function handleFilterChange(key, value) {
     // Pass values to the search params
@@ -109,7 +112,7 @@ export default function Vans() {
   return (
     <div className="van-list-container">
       <h1>Explore our van options</h1>
-      <div className="van-list-filter-buttons">
+      {/* <div className="van-list-filter-buttons">
         <button
           onClick={() => handleFilterChange("type", "simple")}
           className={`van-type simple 
@@ -141,7 +144,75 @@ export default function Vans() {
           </button>
         ) : null}
       </div>
-      <div className="van-list">{vanElements}</div>
+      <div className="van-list">{vanElements}</div> */}
+
+      {/* Use Await component to be able to show some sort of loading message */}
+      <Await resolve={dataPromise.vans}>
+        {(vans) => {
+          const displayedVans = typeFilter
+            ? vans.filter((van) => van.type === typeFilter)
+            : vans;
+
+          const vanElements = displayedVans.map((van) => (
+            <div key={van.id} className="van-tile">
+              <Link
+                to={van.id}
+                state={{
+                  search: `?${searchParams.toString()}`,
+                  type: typeFilter,
+                }}
+              >
+                <img src={van.imageUrl} />
+                <div className="van-info">
+                  <h3>{van.name}</h3>
+                  <p>
+                    ${van.price}
+                    <span>/day</span>
+                  </p>
+                </div>
+                <i className={`van-type ${van.type} selected`}>{van.type}</i>
+              </Link>
+            </div>
+          ));
+          return (
+            <>
+              <div className="van-list-filter-buttons">
+                <button
+                  onClick={() => handleFilterChange("type", "simple")}
+                  className={`van-type simple 
+                        ${typeFilter === "simple" ? "selected" : ""}`}
+                >
+                  Simple
+                </button>
+                <button
+                  onClick={() => handleFilterChange("type", "luxury")}
+                  className={`van-type luxury 
+                        ${typeFilter === "luxury" ? "selected" : ""}`}
+                >
+                  Luxury
+                </button>
+                <button
+                  onClick={() => handleFilterChange("type", "rugged")}
+                  className={`van-type rugged 
+                        ${typeFilter === "rugged" ? "selected" : ""}`}
+                >
+                  Rugged
+                </button>
+
+                {typeFilter ? (
+                  <button
+                    onClick={() => handleFilterChange("type", null)}
+                    className="van-type clear-filters"
+                  >
+                    Clear filter
+                  </button>
+                ) : null}
+              </div>
+              <div className="van-list">{vanElements}</div>
+            </>
+          );
+        }}
+      </Await>
     </div>
   );
 }
