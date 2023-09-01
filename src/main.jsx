@@ -13,48 +13,48 @@ import {
   Routes,
 } from "react-router-dom";
 
-import Home from "./pages/Home";
-import About from "./pages/About";
-// import Vans from "./pages/Vans/Vans";
-// import VanDetail from "./pages/Vans/VanDetail";
-import Dashboard from "./pages/Host/Dashboard";
-import Income from "./pages/Host/Income";
-import Reviews from "./pages/Host/Reviews";
-// import HostVans from "./pages/Host/HostVans";
-// import HostVanDetail from "./pages/Host/HostVanDetail";
-import HostVanInfo from "./pages/Host/HostVanInfo";
-import HostVanPricing from "./pages/Host/HostVanPricing";
-import HostVanPhotos from "./pages/Host/HostVanPhotos";
-import NotFound from "./pages/NotFound";
-import Layout from "./components/Layout";
-import HostLayout from "./components/HostLayout";
-// import Login from "./pages/Login";
-import Error from "./components/Error";
-import AuthRequired from "./components/AuthRequired";
-
 // import Home from "./pages/Home";
 // import About from "./pages/About";
-// // Import the loader as a named import from the component file and then pass it to the route
-import Vans, { loader as vansLoader } from "./pages/Vans/Vans";
-import VanDetail, { loader as vanDetailLoader } from "./pages/Vans/VanDetail";
-// import Dashboard, { loader as dashboardLoader } from "./pages/Host/Dashboard";
+// import Vans from "./pages/Vans/Vans";
+// import VanDetail from "./pages/Vans/VanDetail";
+// import Dashboard from "./pages/Host/Dashboard";
 // import Income from "./pages/Host/Income";
 // import Reviews from "./pages/Host/Reviews";
-import HostVans, { loader as hostVansLoader } from "./pages/Host/HostVans";
-import HostVanDetail, {
-  loader as hostVanDetailLoader,
-} from "./pages/Host/HostVanDetail";
+// import HostVans from "./pages/Host/HostVans";
+// import HostVanDetail from "./pages/Host/HostVanDetail";
 // import HostVanInfo from "./pages/Host/HostVanInfo";
 // import HostVanPricing from "./pages/Host/HostVanPricing";
 // import HostVanPhotos from "./pages/Host/HostVanPhotos";
 // import NotFound from "./pages/NotFound";
+// import Layout from "./components/Layout";
+// import HostLayout from "./components/HostLayout";
+// import Login from "./pages/Login";
+// import Error from "./components/Error";
+// import AuthRequired from "./components/AuthRequired";
+
+import Home from "./pages/Home";
+import About from "./pages/About";
+// // Import the loader as a named import from the component file and then pass it to the route
+import Vans, { loader as vansLoader } from "./pages/Vans/Vans";
+import VanDetail, { loader as vanDetailLoader } from "./pages/Vans/VanDetail";
+import Dashboard, { loader as dashboardLoader } from "./pages/Host/Dashboard";
+import Income from "./pages/Host/Income";
+import Reviews from "./pages/Host/Reviews";
+import HostVans, { loader as hostVansLoader } from "./pages/Host/HostVans";
+import HostVanDetail, {
+  loader as hostVanDetailLoader,
+} from "./pages/Host/HostVanDetail";
+import HostVanInfo from "./pages/Host/HostVanInfo";
+import HostVanPricing from "./pages/Host/HostVanPricing";
+import HostVanPhotos from "./pages/Host/HostVanPhotos";
+import NotFound from "./pages/NotFound";
 import Login, {
   loader as loginLoader,
   action as loginAction,
 } from "./pages/Login";
-// import Layout from "./components/Layout";
-// import HostLayout from "./components/HostLayout";
-// import Error from "./components/Error";
+import Layout from "./components/Layout";
+import HostLayout from "./components/HostLayout";
+import Error from "./components/Error";
 import { requireAuth } from "./utils";
 
 import "./server";
@@ -144,24 +144,22 @@ const router = createBrowserRouter(
         <Route
           index
           element={<Dashboard />}
+          loader={dashboardLoader}
           // Check if user is authenticated before loading data
-          // loader={dashboardLoader}
           // loader={async () => {
           //   const ok = await requireAuth();
           //   console.log("OK ", ok);
           // }}
-          loader={async ({ request }) => await requireAuth(request)}
+          // loader={async ({ request }) => await requireAuth(request)}
         />
         <Route
           path="income"
           element={<Income />}
-          // loader={async ({ request }) => await requireAuth(request)}
           loader={async ({ request }) => await requireAuth(request)}
         />
         <Route
           path="reviews"
           element={<Reviews />}
-          // loader={async ({ request }) => await requireAuth(request)}
           loader={async ({ request }) => await requireAuth(request)}
         />
         <Route
@@ -179,19 +177,16 @@ const router = createBrowserRouter(
           <Route
             index
             element={<HostVanInfo />}
-            // loader={async ({ request }) => await requireAuth(request)}
             loader={async ({ request }) => await requireAuth(request)}
           />
           <Route
             path="pricing"
             element={<HostVanPricing />}
-            // loader={async ({ request }) => await requireAuth(request)}
             loader={async ({ request }) => await requireAuth(request)}
           />
           <Route
             path="photos"
             element={<HostVanPhotos />}
-            // loader={async ({ request }) => await requireAuth(request)}
             loader={async ({ request }) => await requireAuth(request)}
           />
         </Route>
